@@ -3,6 +3,8 @@ const http = require('http');
 const express = require('express');
 const socketIO = require('socket.io');
 
+const {genMsg} = require('./utils/message');
+
 //We use path instead of simlply __dirname + /../public because it joins
 //paths correctly. Otherwise, we'd get a weird /server/../public path which might cause problems later
 const publicPath = path.join(__dirname, '../public');
@@ -17,21 +19,12 @@ const io = socketIO(server);
 io.on('connection', (socket) => {
 	console.log('New User connected-');
 
-	socket.emit('newMessage', {
-		from: 'Admin',
-		text: 'Welcome to the chat!'
-	});
-
-	socket.broadcast.emit('newMessage', {
-		from: 'Admin',
-		text: 'New User joined the chat',
-		createdAt: new Date().getTime()
-	});
+	socket.emit('newMessage', getMsg('Adnim', 'Welcome to the Chat!'));
+	socket.broadcast.emit('newMessage', genMsg('Admin', 'New User joined'));
 
 	socket.on('createMessage', data => {
 		console.log('New Message gotten: '+data);
-		data.createdAt = new Date().getTime();
-		socket.broadcast.emit('newMessage', data);
+		io.emit('newMessage', genMsg(data.from, data.text));
 	});
 
 	socket.on('disconnect', () => console.log('Client Disconnected'));

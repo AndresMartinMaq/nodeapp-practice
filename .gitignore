@@ -1,3 +1,4 @@
 node_modules/
-Chatapp.sublime-project
+*.sublime*
 misc-notes.txt
+*.log
