@@ -2,7 +2,7 @@
   "name": "third-node-chatapp",
   "version": "1.0.0",
   "description": "Udemy tutorial on NodeJS third app, a real-time app using socket.io",
-  "main": "index.js",
+  "main": "server/server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node server/server.js"
@@ -10,9 +10,14 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "express": "^4.15.4"
+    "express": "^4.15.4",
+    "socket.io": "^2.0.3"
   },
   "engines": {
     "node": "6.11.2"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/AndresMartinMaq/nodeapp-practice"
   }
 }
