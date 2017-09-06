@@ -5,10 +5,7 @@ var socket = io();
 socket.on('connect', function(){
 	console.log('Connected to Sever');
 
-	socket.emit('createMessage', {
-		from: 'fingers@west.com',
-		text: 'Chaos is a ladder...'
-	});
+	//socket.emit('createMessage', {from: 'fingers@west.com',text: 'Chaos is a ladder...'});
 });
 socket.on('disconnect', () => console.log('Disconnected from Sever'));
 

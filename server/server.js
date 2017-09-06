@@ -18,13 +18,20 @@ io.on('connection', (socket) => {
 	console.log('New User connected-');
 
 	socket.emit('newMessage', {
-		from: 'redWoman@west.com',
-		text: 'You are the prince that was promised',
-		createdAt: 123
+		from: 'Admin',
+		text: 'Welcome to the chat!'
+	});
+
+	socket.broadcast.emit('newMessage', {
+		from: 'Admin',
+		text: 'New User joined the chat',
+		createdAt: new Date().getTime()
 	});
 
 	socket.on('createMessage', data => {
 		console.log('New Message gotten: '+data);
+		data.createdAt = new Date().getTime();
+		socket.broadcast.emit('newMessage', data);
 	});
 
 	socket.on('disconnect', () => console.log('Client Disconnected'));
