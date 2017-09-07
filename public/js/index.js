@@ -37,6 +37,10 @@ $('#msgForm').on('submit', function(e){
 	socket.emit('createMessage', {
 		from: 'user',
 		text: $('[name=message]').val()
+	}, 
+	//This is the ack callback
+	function(){
+		$('[name=message]').val('');
 	});
 });
 
@@ -46,13 +50,18 @@ locationBtt.on('click', function(){
 	if(!navigator.geolocation){
 		return alert('Geolocation not supported by your browser');
 	}
+
+	locationBtt.attr('disabled', 'disabled').text('Sending...');
+
 	//getCurrentPosition takes a success and failure callback.
 	navigator.geolocation.getCurrentPosition( function(position){
+		locationBtt.removeAttr('disabled').text('Send Location');
 		socket.emit('createLocMessage', {
 			lat: position.coords.latitude,
 			long: position.coords.longitude
 		});
 	}, function(){
+		locationBtt.removeAttr('disabled').text('Send Location');
 		alert('Unable to fetch location');
 	});
 });
