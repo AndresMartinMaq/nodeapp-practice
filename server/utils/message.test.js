@@ -7,7 +7,7 @@ describe('generateMessage', () => {
 	//Single test
 	it('should generate correct message object', () => {
 		var from = 'redWoman';
-		var text = 'You are the prince that was promised.'
+		var text = 'You are the prince that was promised.';
 		var msg = genMsg(from, text);
 		console.log(msg);
 		console.log(expect);

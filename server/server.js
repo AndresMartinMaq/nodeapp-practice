@@ -19,12 +19,13 @@ const io = socketIO(server);
 io.on('connection', (socket) => {
 	console.log('New User connected-');
 
-	socket.emit('newMessage', getMsg('Adnim', 'Welcome to the Chat!'));
+	socket.emit('newMessage', genMsg('Adnim', 'Welcome to the Chat!'));
 	socket.broadcast.emit('newMessage', genMsg('Admin', 'New User joined'));
 
-	socket.on('createMessage', data => {
+	socket.on('createMessage', (data, ack) => {
 		console.log('New Message gotten: '+data);
 		io.emit('newMessage', genMsg(data.from, data.text));
+		ack();
 	});
 
 	socket.on('disconnect', () => console.log('Client Disconnected'));
