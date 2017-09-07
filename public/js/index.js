@@ -13,17 +13,46 @@ socket.on('disconnect', () => console.log('Disconnected from Sever'));
 //Custom Events
 socket.on('newMessage', function(data){
 	console.log("Client gets new Message ", data);
+	//Notice that we populate the html elements not with template strings but
+	//using the jQuery methods (.text). This is best against malicious injections.
 	var li = $('<li></li>');
 	li.text(`${data.from}: ${data.text}`);
 
 	$('#messages').append(li);
 });
 
+socket.on('newLocMessage', function(data){
+	var li = $('<li></li>');
+	var a = $('<a target="_blank">My Current Location</a>');
+	li.text(`${data.from}: `);
+	a.attr('href', data.url);
+	li.append(a);
+	$('#messages').append(li);
+});
+
+//Fire events
 $('#msgForm').on('submit', function(e){
 	e.preventDefault();
 
 	socket.emit('createMessage', {
 		from: 'user',
 		text: $('[name=message]').val()
+	});
+});
+
+//Location Sending stuff
+var locationBtt = $('#sendLoc');
+locationBtt.on('click', function(){
+	if(!navigator.geolocation){
+		return alert('Geolocation not supported by your browser');
+	}
+	//getCurrentPosition takes a success and failure callback.
+	navigator.geolocation.getCurrentPosition( function(position){
+		socket.emit('createLocMessage', {
+			lat: position.coords.latitude,
+			long: position.coords.longitude
+		});
+	}, function(){
+		alert('Unable to fetch location');
 	});
 });

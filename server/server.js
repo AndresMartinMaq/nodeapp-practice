@@ -3,7 +3,7 @@ const http = require('http');
 const express = require('express');
 const socketIO = require('socket.io');
 
-const {genMsg} = require('./utils/message');
+const {genMsg, genLocMsg} = require('./utils/message');
 
 //We use path instead of simlply __dirname + /../public because it joins
 //paths correctly. Otherwise, we'd get a weird /server/../public path which might cause problems later
@@ -25,8 +25,14 @@ io.on('connection', (socket) => {
 	socket.on('createMessage', (data, ack) => {
 		console.log('New Message gotten: ', data);
 		io.emit('newMessage', genMsg(data.from, data.text));
-		
+
 		if(ack){ ack(); }
+	});
+
+	socket.on('createLocMessage', (coords) => {
+		//io.emit('newMessage', genMsg('XX', `${coords.lat}, ${coords.long}`));
+		io.emit('newLocMessage', genLocMsg('XX', 
+			coords.lat, coords.long));
 	});
 
 	socket.on('disconnect', () => console.log('Client Disconnected'));
