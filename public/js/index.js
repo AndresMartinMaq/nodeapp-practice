@@ -13,23 +13,26 @@ socket.on('disconnect', () => console.log('Disconnected from Sever'));
 socket.on('newMessage', function(data){
 	var timeStr = moment(data.createdAt).format('HH:mm');
 
-	//Notice that we populate the html elements not with template strings but
-	//using the jQuery methods (.text). This is best against malicious injections.
-	var li = $('<li></li>');
-	li.text(`${data.from} · ${timeStr}: ${data.text}`);
+	var template = $('#msgTemplate').html();
+	var html = Mustache.render(template, {
+		from: data.from,
+		text: data.text,
+		createdAt: timeStr
+	});
 
-	$('#messages').append(li);
+	$('#messages').append(html);
 });
 
 socket.on('newLocMessage', function(data){
 	var timeStr = moment(data.createdAt).format('HH:mm');
-
-	var li = $('<li></li>');
-	var a = $('<a target="_blank">My Current Location</a>');
-	li.text(`${data.from} · ${timeStr}: `);
-	a.attr('href', data.url);
-	li.append(a);
-	$('#messages').append(li);
+	
+	var template = $('#msgLocTemplate').html();
+	var html = Mustache.render(template, {
+		from: data.from,
+		createdAt: timeStr,
+		url: data.url
+	});
+	$('#messages').append(html);
 });
 
 //Fire event when button clicked
