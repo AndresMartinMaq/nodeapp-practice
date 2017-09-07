@@ -19,7 +19,7 @@ const io = socketIO(server);
 io.on('connection', (socket) => {
 	console.log('New User connected-');
 
-	socket.emit('newMessage', genMsg('Adnim', 'Welcome to the Chat!'));
+	socket.emit('newMessage', genMsg('Admin', 'Welcome to the Chat!'));
 	socket.broadcast.emit('newMessage', genMsg('Admin', 'New User joined'));
 
 	socket.on('createMessage', (data, ack) => {
