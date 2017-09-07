@@ -21,11 +21,12 @@ socket.on('newMessage', function(data){
 	});
 
 	$('#messages').append(html);
+	scrollToBottom();
 });
 
 socket.on('newLocMessage', function(data){
 	var timeStr = moment(data.createdAt).format('HH:mm');
-	
+
 	var template = $('#msgLocTemplate').html();
 	var html = Mustache.render(template, {
 		from: data.from,
@@ -33,6 +34,7 @@ socket.on('newLocMessage', function(data){
 		url: data.url
 	});
 	$('#messages').append(html);
+	scrollToBottom();
 });
 
 //Fire event when button clicked
@@ -70,3 +72,22 @@ locationBtt.on('click', function(){
 		alert('Unable to fetch location');
 	});
 });
+
+//Scrolling to the bottom chatlike
+function scrollToBottom(){
+	//Selecetors
+	var msgScreen = $('#messages');
+	var newestMsg = msgScreen.children('li:last-child');
+	
+	//Heights
+	var clientHeight = msgScreen.prop('clientHeight');
+	var scrollTop = msgScreen.prop('scrollTop');
+	var scrollHeight = msgScreen.prop('scrollHeight');
+	var newestMsgHeight = newestMsg.innerHeight();
+	var prevMsgHeight = newestMsg.prev().innerHeight();
+
+	if (clientHeight+scrollTop+newestMsgHeight+prevMsgHeight >= scrollHeight){
+		//Make it scroll down
+		msgScreen.scrollTop(scrollHeight);
+	}
+}
