@@ -12,12 +12,18 @@ socket.on('disconnect', () => console.log('Disconnected from Sever'));
 
 //Custom Events
 socket.on('newMessage', function(data){
-	console.log("New Message "+ data);
+	console.log("Client gets new Message ", data);
+	var li = $('<li></li>');
+	li.text(`${data.from}: ${data.text}`);
+
+	$('#messages').append(li);
 });
 
-socket.emit('createMessage', {
-	from: 'fingers@west.com',
-	text: 'Chaos is a ladder...'
-}, function(){
-	console.log('My message was acknowledged as received.')
+$('#msgForm').on('submit', function(e){
+	e.preventDefault();
+
+	socket.emit('createMessage', {
+		from: 'user',
+		text: $('[name=message]').val()
+	});
 });
