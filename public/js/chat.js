@@ -5,6 +5,18 @@ var socket = io();
 socket.on('connect', function(){
 	console.log('Connected to Sever');
 	//socket.emit('createMessage', {from: 'fingers@west.com',text: 'Chaos is a ladder...'});
+	var params = $.deparam(window.location.search);
+
+	socket.emit('join', params, function(error){
+		//Ack function
+		if (error){
+			//Redirect the user to the home page (this looks pretty brute)
+			alert(error);
+			window.location.href = '/';
+		} else {
+			console.log('No Error');
+		}
+	});
 });
 
 socket.on('disconnect', () => console.log('Disconnected from Sever'));
@@ -37,12 +49,22 @@ socket.on('newLocMessage', function(data){
 	scrollToBottom();
 });
 
+socket.on('updateUserList', function(userArr){
+	//Update the leftwards list of users present.
+	var ol = $('<ol></ol>');
+
+	userArr.forEach( function(uName){
+		ol.append($('<li></li>').text(uName));
+	});
+
+	$('#users').html(ol);
+});
+
 //Fire event when button clicked
 $('#msgForm').on('submit', function(e){
 	e.preventDefault();
 
 	socket.emit('createMessage', {
-		from: 'user',
 		text: $('[name=message]').val()
 	}, 
 	//This is the ack callback
@@ -59,7 +81,7 @@ locationBtt.on('click', function(){
 	}
 
 	locationBtt.attr('disabled', 'disabled').text('Sending...');
-
+	
 	//getCurrentPosition takes a success and failure callback.
 	navigator.geolocation.getCurrentPosition( function(position){
 		locationBtt.removeAttr('disabled').text('Send Location');
